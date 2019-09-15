@@ -9,5 +9,5 @@ export abstract class DrawnItem implements IDrawnItem {
 		this.colours = context.colours;
 	}
 
-	public abstract draw(): void;
+	public abstract draw(ctx: CanvasRenderingContext2D): void;
 }

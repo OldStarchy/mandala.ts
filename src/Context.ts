@@ -22,7 +22,7 @@ export class Context {
 		if (ctx === null) {
 			throw 'Could not create context 2d';
 		}
-		this.canvas = new Canvas(ctx);
+		this.canvas = new Canvas(this, ctx);
 		this.mouse = new Mouse(canvas);
 		this.keyboard = new Keyboard();
 		this.colours = { stroke: 'black', fill: 'black' };

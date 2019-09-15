@@ -11,13 +11,13 @@ export class Stroke extends DrawnItem {
 
 	public addPoint(point: Point) {
 		this.points.push(point);
-		this.context.canvas.redraw();
+		this.context.canvas.requestRedraw();
 	}
 
 	public setPoint(index: number, point: Point) {
 		if (index < 0) index += this.points.length;
 		this.points[index] = point;
-		this.context.canvas.redraw();
+		this.context.canvas.requestRedraw();
 	}
 
 	public getPoint(index: number) {
@@ -25,8 +25,7 @@ export class Stroke extends DrawnItem {
 		return this.points[index];
 	}
 
-	public draw() {
-		const ctx = this.context.canvas.ctx;
+	public draw(ctx: CanvasRenderingContext2D) {
 		ctx.strokeStyle = this.colours.stroke;
 		ctx.fillStyle = this.colours.fill;
 		if (this.points.length == 1) {

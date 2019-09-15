@@ -2,7 +2,6 @@ import { Context } from '../Context';
 import { Stroke } from '../DrawnItem/Stroke';
 import { EventHandler } from '../EventEmitter/EventEmitter';
 import { Point } from '../Geometry/Point';
-import { DrawItemUndo } from '../Undo/DrawItemUndo';
 import { Tool } from './Tool';
 
 export class StrokeTool extends Tool {
@@ -24,13 +23,11 @@ export class StrokeTool extends Tool {
 		const { x, y } = event;
 		this.stroke = new Stroke(this.context);
 		this.stroke.addPoint(new Point(x, y));
-		this.context.canvas.add(this.stroke);
+		this.context.canvas.stage(this.stroke);
 	}
 
 	public onMouseUp(event: MouseEvent) {
-		if (this.stroke) {
-			this.context.undo.push(new DrawItemUndo(this.context, this.stroke));
-		}
+		this.context.canvas.commit();
 		this.stroke = null;
 	}
 
@@ -52,7 +49,7 @@ export class StrokeTool extends Tool {
 
 	public cancel() {
 		if (this.stroke) {
-			this.context.canvas.remove(this.stroke);
+			this.context.canvas.drop();
 			this.stroke = null;
 		}
 	}
