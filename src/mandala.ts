@@ -1,3 +1,6 @@
+import { IUndo } from './Undo/Undo';
+import { DrawItemUndo } from './Undo/DrawItemUndo';
+
 interface IRepetitionSettings {
 	repetitions: number;
 }
@@ -6,8 +9,8 @@ interface IColours {
 	fill: string;
 }
 
-interface IDrawnItem {
-	draw();
+export interface IDrawnItem {
+	draw(): void;
 }
 
 abstract class DrawnItemDecorator<T extends IDrawnItem> implements IDrawnItem {
@@ -29,7 +32,7 @@ abstract class DrawnItem implements IDrawnItem {
 		this.colours = context.colours;
 	}
 
-	public abstract draw();
+	public abstract draw(): void;
 }
 
 class DrawnItemRadialRepeatDecorator<
@@ -126,29 +129,8 @@ abstract class Tool {
 	public onDeactivate(): void {}
 }
 
-interface IUndo {
-	undo: () => void;
-	redo: () => void;
-}
-
-class Undo implements IUndo {
-	public constructor(
-		public readonly undo: () => void,
-		public readonly redo: () => void
-	) {}
-}
-
-class DrawItemUndo extends Undo {
-	public constructor(context: Context, item: IDrawnItem) {
-		super(
-			() => context.canvas.remove(item),
-			() => context.canvas.add(item)
-		);
-	}
-}
-
 class StrokeTool extends Tool {
-	private stroke: DrawnItemRadialRepeatDecorator<Stroke>;
+	private stroke: DrawnItemRadialRepeatDecorator<Stroke> | null = null;
 
 	private onMouseDownHandler: EventHandler;
 	private onMouseUpHandler: EventHandler;
@@ -157,6 +139,11 @@ class StrokeTool extends Tool {
 
 	public constructor(context: Context) {
 		super(context);
+
+		this.onMouseDownHandler = this.onMouseDown.bind(this);
+		this.onMouseUpHandler = this.onMouseUp.bind(this);
+		this.onMouseMoveHandler = this.onMouseMove.bind(this);
+		this.onKeyPressHandler = this.onKeyPress.bind(this);
 	}
 
 	public onMouseDown(event: MouseEvent) {
@@ -205,11 +192,6 @@ class StrokeTool extends Tool {
 	public onActivate() {
 		this.onDeactivate();
 
-		this.onMouseDownHandler = this.onMouseDown.bind(this);
-		this.onMouseUpHandler = this.onMouseUp.bind(this);
-		this.onMouseMoveHandler = this.onMouseMove.bind(this);
-		this.onKeyPressHandler = this.onKeyPress.bind(this);
-
 		this.context.mouse.on('mousedown', this.onMouseDownHandler);
 		this.context.mouse.on('mouseup', this.onMouseUpHandler);
 		this.context.mouse.on('mousemove', this.onMouseMoveHandler);
@@ -251,40 +233,40 @@ class UndoTool extends Tool {
 	}
 }
 
-class FillTool extends Tool {
-	private onMouseDownHandler: EventHandler;
+// class FillTool extends Tool {
+// 	private onMouseDownHandler: EventHandler;
 
-	public constructor(context: Context) {
-		super(context);
-	}
+// 	public constructor(context: Context) {
+// 		super(context);
 
-	private onMouseDown(event: MouseEvent) {
-		this.fill(event.x, event.y);
-	}
+// 		this.onMouseDownHandler = this.onMouseDown.bind(this);
+// 	}
 
-	public fill(x: number, y: number) {
-		const ctx = this.context.canvas.ctx;
-		const data = ctx.getImageData(
-			0,
-			0,
-			ctx.canvas.width,
-			ctx.canvas.height
-		);
-		//TODO: this
-	}
+// 	private onMouseDown(event: MouseEvent) {
+// 		this.fill(event.x, event.y);
+// 	}
 
-	public onActivate() {
-		this.onDeactivate();
+// 	public fill(x: number, y: number) {
+// 		const ctx = this.context.canvas.ctx;
+// 		const data = ctx.getImageData(
+// 			0,
+// 			0,
+// 			ctx.canvas.width,
+// 			ctx.canvas.height
+// 		);
+// 		//TODO: this
+// 	}
 
-		this.onMouseDownHandler = this.onMouseDown.bind(this);
+// 	public onActivate() {
+// 		this.onDeactivate();
 
-		this.context.mouse.on('mousedown', this.onMouseDownHandler);
-	}
+// 		this.context.mouse.on('mousedown', this.onMouseDownHandler);
+// 	}
 
-	public onDeactivate() {
-		this.context.mouse.off('mousedown', this.onMouseDownHandler);
-	}
-}
+// 	public onDeactivate() {
+// 		this.context.mouse.off('mousedown', this.onMouseDownHandler);
+// 	}
+// }
 
 class Canvas {
 	private items: IDrawnItem[] = [];
@@ -309,7 +291,7 @@ class Canvas {
 	}
 }
 
-class Context {
+export class Context {
 	public mouse: Mouse;
 	public keyboard: Keyboard;
 	public repetitionSettings: IRepetitionSettings;
@@ -318,7 +300,11 @@ class Context {
 	public undo: UndoHistory;
 
 	public constructor(canvas: HTMLCanvasElement) {
-		this.canvas = new Canvas(canvas.getContext('2d'));
+		const ctx = canvas.getContext('2d');
+		if (ctx == null) {
+			throw 'Could not create context 2d';
+		}
+		this.canvas = new Canvas(ctx);
 		this.mouse = new Mouse(canvas);
 		this.keyboard = new Keyboard();
 		this.repetitionSettings = { repetitions: 9 };
@@ -339,10 +325,11 @@ class EventEmitter implements IEventEmitter {
 	private _handlers: { [propName: string]: EventHandler<unknown>[] } = {};
 
 	public one(type: string, handler: EventHandler) {
-		this.on(type, function once(event: unknown) {
+		const once = (event: unknown) => {
 			handler(event);
-			this.off(once);
-		});
+			this.off(type, once);
+		};
+		this.on(type, once);
 	}
 
 	public on(type: string, handler: EventHandler) {
@@ -406,7 +393,7 @@ class UndoHistory extends EventEmitter {
 
 	public undo() {
 		if (this.history.length > 0) {
-			const undo = this.history.pop();
+			const undo = this.history.pop()!;
 			undo.undo();
 			this.future.push(undo);
 			this.trigger('undo', { undo });
@@ -415,7 +402,7 @@ class UndoHistory extends EventEmitter {
 
 	public redo() {
 		if (this.future.length > 0) {
-			const undo = this.future.pop();
+			const undo = this.future.pop()!;
 			undo.redo();
 			this.history.push(undo);
 			this.trigger('redo', { undo });
@@ -428,11 +415,3 @@ const ctx = new Context(canvas);
 const tool = new StrokeTool(ctx);
 const undoTool = new UndoTool(ctx);
 tool.onActivate();
-
-// function step() {
-// 	ctx.canvas.redraw();
-
-// 	setTimeout(step, 50);
-// }
-
-// step();

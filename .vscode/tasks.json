@@ -6,7 +6,7 @@
 		{
 			"label": "watch",
 			"type": "shell",
-			"command": "tsc mandala.ts -w --sourceMap",
+			"command": "webpack --watch",
 			"problemMatcher": []
 		}
 	]
