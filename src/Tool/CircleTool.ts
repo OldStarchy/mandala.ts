@@ -12,9 +12,21 @@ export class CircleTool extends ClickAndDragTool<Circle> {
 
 	public drag(event: MouseEvent) {
 		const { x, y } = event;
-		const point = new Point(x, y);
+		const item = this.item!;
+		const topLeft = item.topLeft;
+		let point = new Point(x, y);
 
-		this.item!.bottomRight = point;
+		if (event.shiftKey) {
+			const size = point.sub(topLeft);
+
+			if (size.x > size.y) {
+				point = topLeft.add(new Point(Math.abs(size.y) * Math.sign(size.x), size.y));
+			} else {
+				point = topLeft.add(new Point(size.x, Math.abs(size.x) * Math.sign(size.y)));
+			}
+		}
+
+		item.bottomRight = point;
 		this.context.canvas.requestRedraw();
 	}
 }
