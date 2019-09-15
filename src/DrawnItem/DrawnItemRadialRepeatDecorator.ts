@@ -1,7 +1,10 @@
-import {IDrawnItem} from './IDrawnItem';
-import {DrawnItemDecorator} from './DrawnItemDecorator';
-import {IRepetitionSettings, Context} from '../mandala';
-export class DrawnItemRadialRepeatDecorator<T extends IDrawnItem> extends DrawnItemDecorator<T> {
+import { IDrawnItem } from './IDrawnItem';
+import { DrawnItemDecorator } from './DrawnItemDecorator';
+import { IRepetitionSettings } from '../mandala';
+import { Context } from '../Context';
+export class DrawnItemRadialRepeatDecorator<
+	T extends IDrawnItem
+> extends DrawnItemDecorator<T> {
 	private repetitionSettings: IRepetitionSettings;
 	public constructor(context: Context, inner: T) {
 		super(context, inner);
@@ -22,8 +25,7 @@ export class DrawnItemRadialRepeatDecorator<T extends IDrawnItem> extends DrawnI
 				ctx.restore();
 				angle += step;
 			}
-		}
-		else {
+		} else {
 			this.inner.draw();
 		}
 	}

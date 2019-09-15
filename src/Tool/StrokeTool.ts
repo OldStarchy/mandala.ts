@@ -3,7 +3,8 @@ import { DrawnItemRadialRepeatDecorator } from '../DrawnItem/DrawnItemRadialRepe
 import { Stroke } from '../DrawnItem/Stroke';
 import { Point } from '../Geometry/Point';
 import { Tool } from './Tool';
-import { EventHandler, Context } from '../mandala';
+import { EventHandler } from '../mandala';
+import { Context } from '../Context';
 export class StrokeTool extends Tool {
 	private stroke: DrawnItemRadialRepeatDecorator<Stroke> | null = null;
 	private onMouseDownHandler: EventHandler;

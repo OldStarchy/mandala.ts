@@ -1,5 +1,5 @@
 import { DrawnItem } from './DrawnItem';
-import { Context } from '../mandala';
+import { Context } from '../Context';
 import { Point } from '../Geometry/Point';
 export class Stroke extends DrawnItem {
 	protected points: Point[] = [];

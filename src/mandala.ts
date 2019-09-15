@@ -1,11 +1,8 @@
-import { IDrawnItem } from './DrawnItem/IDrawnItem';
 import { StrokeTool } from './Tool/StrokeTool';
 import { UndoTool } from './Tool/UndoTool';
-import { Mouse } from './Input/Mouse';
-import { Keyboard } from './Input/Keyboard';
-import { UndoHistory } from './Undo/UndoHistory';
-import { Tool } from './Tool/Tool';
 import { LineTool } from './Tool/LineTool';
+import { ShortcutStroke } from './ShortcutStroke';
+import { Context } from './Context';
 
 export interface IRepetitionSettings {
 	repetitions: number;
@@ -15,291 +12,53 @@ export interface IColours {
 	fill: string;
 }
 
-class Canvas {
-	private items: IDrawnItem[] = [];
-	public constructor(public readonly ctx: CanvasRenderingContext2D) {}
-
-	public add(item: IDrawnItem) {
-		this.items.push(item);
-		this.redraw();
-	}
-
-	public remove(item: IDrawnItem) {
-		const index = this.items.indexOf(item);
-		if (index !== -1) {
-			this.items.splice(index, 1);
-			this.redraw();
-		}
-	}
-
-	public redraw() {
-		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-		this.items.forEach(item => item.draw());
-	}
-}
-
-export class Context {
-	public readonly mouse: Mouse;
-	public readonly keyboard: Keyboard;
-	public readonly repetitionSettings: IRepetitionSettings;
-	public readonly colours: IColours;
-	public readonly canvas: Canvas;
-	public readonly undo: UndoHistory;
-	public readonly tools: ToolManager;
-	public readonly command: CommandManager;
-	public readonly shortcut: ShortcutManager;
-
-	public constructor(canvas: HTMLCanvasElement) {
-		const ctx = canvas.getContext('2d');
-		if (ctx === null) {
-			throw 'Could not create context 2d';
-		}
-		this.canvas = new Canvas(ctx);
-		this.mouse = new Mouse(canvas);
-		this.keyboard = new Keyboard();
-		this.repetitionSettings = { repetitions: 9 };
-		this.colours = { stroke: 'black', fill: 'black' };
-		this.undo = new UndoHistory();
-		this.tools = new ToolManager();
-		this.command = new CommandManager(this);
-
-		//Must come after keyboard
-		this.shortcut = new ShortcutManager(this);
-	}
-}
-
 export type EventHandler<T = any> = (event: T) => void;
 
-class ToolManager {
-	private tools: Tool[] = [];
-	private activeTool: number | null = null;
+class App {
+	private readonly context: Context;
 
-	public addTool(tool: Tool) {
-		this.tools.push(tool);
+	constructor(canvas: HTMLCanvasElement) {
+		this.context = new Context(canvas);
+
+		this.initTools();
+		this.initUndo();
+		this.initToolbarHotkeys();
 	}
 
-	public activateTool(tool: number | null) {
-		if (this.activeTool === tool) {
-			return;
-		}
-
-		if (this.activeTool !== null) {
-			this.tools[this.activeTool].onDeactivate();
-			this.activeTool = null;
-		}
-
-		if (tool !== null) {
-			this.activeTool = tool;
-			this.tools[this.activeTool].onActivate();
-
-			console.log(`Tool "${this.activeTool}" activated`);
-		} else {
-			console.log(`Tools deactivated`);
-		}
+	protected initTools() {
+		this.context.tools.addTool(new StrokeTool(this.context));
+		this.context.tools.addTool(new LineTool(this.context));
 	}
 
-	public allTools() {
-		return this.tools.slice();
-	}
-}
-
-type Command = (context: Context) => void;
-
-class CommandManager {
-	private readonly commands: { [id: string]: Command } = {};
-
-	public constructor(private readonly context: Context) {}
-
-	public register(id: string, command: Command) {
-		if (this.commands[id]) {
-			throw `Duplicate command id "${id}"`;
-		}
-
-		this.commands[id] = command;
-	}
-
-	public run(id: string) {
-		if (!this.commands[id]) {
-			throw `Command "${id}" does not exist`;
-		}
-
-		console.log(`Running command "${id}"`);
-
-		this.commands[id](this.context);
-	}
-}
-
-interface IShortcut {
-	matches(event: KeyboardEvent): boolean;
-	equals(other: IShortcut): boolean;
-	toString(): string;
-}
-
-// class ShortcutChord implements IShortcut {
-// 	public static parse(str: string) {
-// 		const parts = str.split(',').map(part => part.trim());
-
-// 		if (parts.length > 1) {
-// 			throw 'Chorded shortcuts not implemented';
-// 		}
-
-// 		const stroke = parts[0];
-// 		return ShortcutStroke.parse(stroke);
-// 	}
-// }
-
-class ShortcutStroke implements IShortcut {
-	public constructor(
-		public readonly key: string,
-		public readonly ctrl: boolean = false,
-		public readonly shift: boolean = false,
-		public readonly alt: boolean = false
-	) {}
-
-	public equals(other: IShortcut): boolean {
-		if (other instanceof ShortcutStroke) {
-			return (
-				this.key === other.key &&
-				this.ctrl === other.ctrl &&
-				this.shift === other.shift &&
-				this.alt === other.alt
-			);
-		}
-
-		return false;
-	}
-
-	public matches(event: KeyboardEvent) {
-		if (this.key !== event.key) return false;
-		if (this.ctrl && !event.ctrlKey) return false;
-		if (this.shift && !event.shiftKey) return false;
-		if (this.alt && !event.altKey) return false;
-
-		return true;
-	}
-
-	public toString() {
-		return [
-			this.alt ? 'alt' : null,
-			this.ctrl ? 'ctrl' : null,
-			this.shift ? 'shift' : null,
-			this.key
-		]
-			.filter(v => v !== null)
-			.join('+');
-	}
-
-	public static parse(str: string) {
-		const keys = str.split('+').map(key => key.trim());
-
-		if (keys.length == 0) {
-			throw `Invalid shortcut string ${str}`;
-		}
-
-		let alt = false;
-		let ctrl = false;
-		let shift = false;
-		let key = keys.pop()!;
-
-		keys.forEach(modifier => {
-			if (modifier === 'alt') {
-				alt = true;
-				return;
-			}
-			if (modifier === 'ctrl') {
-				ctrl = true;
-				return;
-			}
-			if (modifier === 'shift') {
-				shift = true;
-				return;
-			}
-
-			throw `Invalid shortcut string ${str}`;
-		});
-
-		return new ShortcutStroke(key, ctrl, shift, alt);
-	}
-}
-
-type Shortcut = ShortcutStroke; //No chorded shortcuts yet
-
-class ShortcutManager {
-	private readonly shortcuts: {
-		input: IShortcut;
-		command: string;
-	}[] = [];
-
-	private onKeyDownHandler: EventHandler;
-
-	public constructor(private context: Context) {
-		this.onKeyDownHandler = this.onKeyDown.bind(this);
-
-		context.keyboard.on('keydown', this.onKeyDownHandler);
-	}
-
-	private onKeyDown(event: KeyboardEvent) {
-		const sc = this.getShortcutForEvent(event);
-
-		if (sc) {
-			console.log(`Shortcut "${sc.input.toString()}" detected`);
-			this.context.command.run(sc.command);
-		}
-	}
-
-	public register(input: IShortcut, command: string): void;
-	public register(input: string, command: string): void;
-	public register(input: string | IShortcut, command: string): void {
-		if (typeof input === 'string') {
-			input = ShortcutStroke.parse(input);
-		}
-
-		for (const sc of this.shortcuts) {
-			if (sc.input.equals(input)) {
-				throw `Duplicate shortcut input "${input.toString()}"`;
-			}
-		}
-
-		console.log(
-			`Shortcut "${input.toString()}" registered for "${command}"`
+	protected initUndo() {
+		this.context.command.register('edit.undo', () =>
+			this.context.undo.undo()
+		);
+		this.context.command.register('edit.redo', () =>
+			this.context.undo.redo()
 		);
 
-		this.shortcuts.push({
-			input,
-			command
-		});
+		this.context.shortcut.register('ctrl+z', 'edit.undo');
+		this.context.shortcut.register('ctrl+y', 'edit.redo');
 	}
 
-	public getShortcutForEvent(event: KeyboardEvent) {
-		return this.shortcuts.find(sc => sc.input.matches(event)) || null;
+	protected initToolbarHotkeys() {
+		for (let i = 0; i < 9; i++) {
+			this.context.command.register(`tool.activate.${i + 1}`, () => {
+				if (i < this.context.tools.allTools().length) {
+					this.context.tools.activateTool(i);
+				} else {
+					this.context.tools.activateTool(null);
+				}
+			});
+
+			this.context.shortcut.register(
+				`${i + 1}`,
+				`tool.activate.${i + 1}`
+			);
+		}
 	}
 }
 
-const initUndo = (context: Context) => {
-	context.command.register('edit.undo', () => context.undo.undo());
-	context.command.register('edit.redo', () => context.undo.redo());
-
-	context.shortcut.register('ctrl+z', 'edit.undo');
-	context.shortcut.register('ctrl+y', 'edit.redo');
-};
-
-const initToolbarHotkeys = (context: Context) => {
-	for (let i = 0; i < 9; i++) {
-		context.command.register(`tool.activate.${i + 1}`, () => {
-			if (i < context.tools.allTools().length) {
-				context.tools.activateTool(i);
-			} else {
-				context.tools.activateTool(null);
-			}
-		});
-
-		context.shortcut.register(`${i + 1}`, `tool.activate.${i + 1}`);
-	}
-};
-
 const canvas = document.getElementById('Canvas') as HTMLCanvasElement;
-const ctx = new Context(canvas);
-ctx.tools.addTool(new StrokeTool(ctx));
-ctx.tools.addTool(new LineTool(ctx));
-initUndo(ctx);
-initToolbarHotkeys(ctx);
+new App(canvas);
