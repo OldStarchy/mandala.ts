@@ -1,9 +1,9 @@
-import { DrawItemUndo } from '../Undo/DrawItemUndo';
+import { Context } from '../Context';
 import { Stroke } from '../DrawnItem/Stroke';
 import { Point } from '../Geometry/Point';
-import { Tool } from './Tool';
 import { EventHandler } from '../mandala';
-import { Context } from '../Context';
+import { DrawItemUndo } from '../Undo/DrawItemUndo';
+import { Tool } from './Tool';
 export class LineTool extends Tool {
 	private stroke: Stroke | null = null;
 	private onMouseDownHandler: EventHandler;
@@ -17,6 +17,7 @@ export class LineTool extends Tool {
 		this.onMouseMoveHandler = this.onMouseMove.bind(this);
 		this.onKeyPressHandler = this.onKeyPress.bind(this);
 	}
+
 	public onMouseDown(event: MouseEvent) {
 		const { x, y } = event;
 		this.stroke = new Stroke(this.context);
@@ -24,12 +25,14 @@ export class LineTool extends Tool {
 		this.stroke.addPoint(new Point(x, y));
 		this.context.canvas.add(this.stroke);
 	}
+
 	public onMouseUp(event: MouseEvent) {
 		if (this.stroke) {
 			this.context.undo.push(new DrawItemUndo(this.context, this.stroke));
 		}
 		this.stroke = null;
 	}
+
 	public onMouseMove(event: MouseEvent) {
 		if (this.stroke) {
 			const { x, y } = event;
@@ -38,17 +41,20 @@ export class LineTool extends Tool {
 			this.stroke.setPoint(-1, point);
 		}
 	}
+
 	public onKeyPress(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
 			this.cancel();
 		}
 	}
+
 	public cancel() {
 		if (this.stroke) {
 			this.context.canvas.remove(this.stroke);
 			this.stroke = null;
 		}
 	}
+
 	public onActivate() {
 		this.onDeactivate();
 		this.context.mouse.on('mousedown', this.onMouseDownHandler);

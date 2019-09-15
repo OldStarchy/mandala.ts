@@ -14,19 +14,16 @@ export class ShortcutStroke implements IShortcut {
 		public readonly key: string,
 		public readonly ctrl: boolean = false,
 		public readonly shift: boolean = false,
-		public readonly alt: boolean = false
+		public readonly alt: boolean = false,
 	) {}
+
 	public equals(other: IShortcut): boolean {
 		if (other instanceof ShortcutStroke) {
-			return (
-				this.key === other.key &&
-				this.ctrl === other.ctrl &&
-				this.shift === other.shift &&
-				this.alt === other.alt
-			);
+			return this.key === other.key && this.ctrl === other.ctrl && this.shift === other.shift && this.alt === other.alt;
 		}
 		return false;
 	}
+
 	public matches(event: KeyboardEvent) {
 		if (this.key !== event.key) return false;
 		if (this.ctrl && !event.ctrlKey) return false;
@@ -34,16 +31,13 @@ export class ShortcutStroke implements IShortcut {
 		if (this.alt && !event.altKey) return false;
 		return true;
 	}
+
 	public toString() {
-		return [
-			this.alt ? 'alt' : null,
-			this.ctrl ? 'ctrl' : null,
-			this.shift ? 'shift' : null,
-			this.key
-		]
+		return [this.alt ? 'alt' : null, this.ctrl ? 'ctrl' : null, this.shift ? 'shift' : null, this.key]
 			.filter(v => v !== null)
 			.join('+');
 	}
+
 	public static parse(str: string) {
 		const keys = str.split('+').map(key => key.trim());
 		if (keys.length == 0) {
@@ -52,7 +46,7 @@ export class ShortcutStroke implements IShortcut {
 		let alt = false;
 		let ctrl = false;
 		let shift = false;
-		let key = keys.pop()!;
+		const key = keys.pop()!;
 		keys.forEach(modifier => {
 			if (modifier === 'alt') {
 				alt = true;

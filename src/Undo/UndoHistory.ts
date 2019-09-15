@@ -1,5 +1,5 @@
-import { IUndo } from './Undo';
 import { EventEmitter } from '../EventEmitter/EventEmitter';
+import { IUndo } from './Undo';
 export class UndoHistory extends EventEmitter {
 	protected readonly history: IUndo[] = [];
 	protected readonly future: IUndo[] = [];
@@ -7,6 +7,7 @@ export class UndoHistory extends EventEmitter {
 		this.history.push(undo);
 		this.future.splice(0);
 	}
+
 	public undo() {
 		if (this.history.length > 0) {
 			const undo = this.history.pop()!;
@@ -15,6 +16,7 @@ export class UndoHistory extends EventEmitter {
 			this.trigger('undo', { undo });
 		}
 	}
+
 	public redo() {
 		if (this.future.length > 0) {
 			const undo = this.future.pop()!;

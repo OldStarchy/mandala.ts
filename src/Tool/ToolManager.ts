@@ -5,6 +5,7 @@ export class ToolManager {
 	public addTool(tool: Tool) {
 		this.tools.push(tool);
 	}
+
 	public activateTool(tool: number | null) {
 		if (this.activeTool === tool) {
 			return;
@@ -21,6 +22,7 @@ export class ToolManager {
 			console.log(`Tools deactivated`);
 		}
 	}
+
 	public allTools() {
 		return this.tools.slice();
 	}

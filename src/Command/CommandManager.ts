@@ -1,9 +1,10 @@
-import { Command } from './Command';
 import { Context } from '../Context';
+import { Command } from './Command';
 export class CommandManager {
 	private readonly commands: {
 		[id: string]: Command;
 	} = {};
+
 	public constructor(private readonly context: Context) {}
 	public register(id: string, command: Command) {
 		if (this.commands[id]) {
@@ -11,6 +12,7 @@ export class CommandManager {
 		}
 		this.commands[id] = command;
 	}
+
 	public run(id: string) {
 		if (!this.commands[id]) {
 			throw `Command "${id}" does not exist`;

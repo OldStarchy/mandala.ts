@@ -1,7 +1,7 @@
-import { StrokeTool } from './Tool/StrokeTool';
-import { LineTool } from './Tool/LineTool';
 import { Context } from './Context';
 import { RadialRepeatModifier } from './RadialRepeatModifier';
+import { LineTool } from './Tool/LineTool';
+import { StrokeTool } from './Tool/StrokeTool';
 
 export interface IColours {
 	stroke: string;
@@ -16,9 +16,7 @@ class App {
 	constructor(canvas: HTMLCanvasElement) {
 		this.context = new Context(canvas);
 
-		this.context.canvas.modifiers.push(
-			new RadialRepeatModifier(this.context, { repetitions: 9 })
-		);
+		this.context.canvas.modifiers.push(new RadialRepeatModifier(this.context, { repetitions: 9 }));
 		this.initTools();
 		this.initUndo();
 		this.initToolbarHotkeys();
@@ -30,12 +28,8 @@ class App {
 	}
 
 	protected initUndo() {
-		this.context.command.register('edit.undo', () =>
-			this.context.undo.undo()
-		);
-		this.context.command.register('edit.redo', () =>
-			this.context.undo.redo()
-		);
+		this.context.command.register('edit.undo', () => this.context.undo.undo());
+		this.context.command.register('edit.redo', () => this.context.undo.redo());
 
 		this.context.shortcut.register('ctrl+z', 'edit.undo');
 		this.context.shortcut.register('ctrl+y', 'edit.redo');
@@ -51,10 +45,7 @@ class App {
 				}
 			});
 
-			this.context.shortcut.register(
-				`${i + 1}`,
-				`tool.activate.${i + 1}`
-			);
+			this.context.shortcut.register(`${i + 1}`, `tool.activate.${i + 1}`);
 		}
 	}
 }

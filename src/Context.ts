@@ -1,11 +1,11 @@
-import { Mouse } from './Input/Mouse';
-import { Keyboard } from './Input/Keyboard';
-import { UndoHistory } from './Undo/UndoHistory';
-import { ToolManager } from './Tool/ToolManager';
-import { CommandManager } from './Command/CommandManager';
-import { ShortcutManager } from './Shortcut/ShortcutManager';
-import { IColours } from './mandala';
 import { Canvas } from './Canvas';
+import { CommandManager } from './Command/CommandManager';
+import { Keyboard } from './Input/Keyboard';
+import { Mouse } from './Input/Mouse';
+import { IColours } from './mandala';
+import { ShortcutManager } from './Shortcut/ShortcutManager';
+import { ToolManager } from './Tool/ToolManager';
+import { UndoHistory } from './Undo/UndoHistory';
 export class Context {
 	public readonly mouse: Mouse;
 	public readonly keyboard: Keyboard;

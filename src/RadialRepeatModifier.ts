@@ -1,27 +1,23 @@
 import { Context } from './Context';
+import { DrawnItemDecorator } from './DrawnItem/DrawnItemDecorator';
 import { IDrawnItem } from './DrawnItem/IDrawnItem';
 import { Modifier } from './Modifier';
-import { DrawnItemDecorator } from './DrawnItem/DrawnItemDecorator';
 
 export interface IRadialRepeatSettings {
 	repetitions: number;
 }
 
 export class RadialRepeatModifier extends Modifier {
-	public constructor(
-		protected readonly context: Context,
-		public settings: IRadialRepeatSettings
-	) {
+	public constructor(protected readonly context: Context, public settings: IRadialRepeatSettings) {
 		super();
 	}
+
 	public modify(item: IDrawnItem) {
 		return new DrawnItemRadialRepeatDecorator(this.settings, item);
 	}
 }
 
-export class DrawnItemRadialRepeatDecorator<
-	T extends IDrawnItem
-> extends DrawnItemDecorator<T> {
+export class DrawnItemRadialRepeatDecorator<T extends IDrawnItem> extends DrawnItemDecorator<T> {
 	public constructor(protected settings: IRadialRepeatSettings, inner: T) {
 		super(inner);
 	}

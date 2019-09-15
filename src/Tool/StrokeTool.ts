@@ -1,9 +1,9 @@
-import { DrawItemUndo } from '../Undo/DrawItemUndo';
+import { Context } from '../Context';
 import { Stroke } from '../DrawnItem/Stroke';
 import { Point } from '../Geometry/Point';
-import { Tool } from './Tool';
 import { EventHandler } from '../mandala';
-import { Context } from '../Context';
+import { DrawItemUndo } from '../Undo/DrawItemUndo';
+import { Tool } from './Tool';
 
 export class StrokeTool extends Tool {
 	private stroke: Stroke | null = null;
