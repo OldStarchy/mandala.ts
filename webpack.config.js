@@ -6,7 +6,6 @@ const htmlPlugin = new html({
 	template: path.resolve(__dirname) + '/src/index.html',
 	filename: 'index.html',
 });
-
 module.exports = {
 	entry: ['./src/mandala.tsx'],
 	devtool: 'source-map',
@@ -28,4 +27,9 @@ module.exports = {
 	},
 	mode: 'none',
 	plugins: [htmlPlugin],
+	devServer: {
+		contentBase: path.join(__dirname, 'dist'),
+		compress: true,
+		port: 9000,
+	},
 };

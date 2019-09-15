@@ -4,9 +4,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "watch",
-			"type": "shell",
-			"command": "webpack --watch",
+			"type": "npm",
+			"script": "watch",
+			"group": "build",
 			"problemMatcher": []
 		}
 	]
