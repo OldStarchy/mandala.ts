@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { AppComponent } from './Components/AppComponent';
 import { Context } from './Context';
 import { RadialRepeatModifier } from './RadialRepeatModifier';
+import { CircleTool } from './Tool/CircleTool';
 import { LineTool } from './Tool/LineTool';
 import { StrokeTool } from './Tool/StrokeTool';
 
@@ -26,6 +27,7 @@ class App {
 	protected initTools() {
 		this.context.tools.addTool(new StrokeTool(this.context));
 		this.context.tools.addTool(new LineTool(this.context));
+		this.context.tools.addTool(new CircleTool(this.context));
 	}
 
 	protected initUndo() {

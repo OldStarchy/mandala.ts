@@ -9,6 +9,10 @@ export class Point {
 		return this.x ** 2 + this.y ** 2;
 	}
 
+	public abs() {
+		return new Point(this.x < 0 ? -this.x : this.x, this.y < 0 ? -this.y : this.y);
+	}
+
 	public xy(): [number, number] {
 		return [this.x, this.y];
 	}
