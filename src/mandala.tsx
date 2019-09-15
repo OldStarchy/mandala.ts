@@ -1,3 +1,6 @@
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { AppComponent } from './Components/AppComponent';
 import { Context } from './Context';
 import { RadialRepeatModifier } from './RadialRepeatModifier';
 import { LineTool } from './Tool/LineTool';
@@ -48,5 +51,7 @@ class App {
 	}
 }
 
-const canvas = document.getElementById('Canvas') as HTMLCanvasElement;
+ReactDOM.render(<AppComponent />, document.getElementsByClassName('app-container')[0]);
+
+const canvas = document.getElementsByTagName('canvas')[0] as HTMLCanvasElement;
 new App(canvas);

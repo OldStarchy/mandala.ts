@@ -8,7 +8,7 @@ const htmlPlugin = new html({
 });
 
 module.exports = {
-	entry: ['./src/mandala.ts'],
+	entry: ['./src/mandala.tsx'],
 	devtool: 'source-map',
 	module: {
 		rules: [
@@ -20,7 +20,7 @@ module.exports = {
 		],
 	},
 	resolve: {
-		extensions: ['.tsx', '.ts'],
+		extensions: ['.tsx', '.ts', '.jsx', '.js'],
 	},
 	output: {
 		filename: 'mandala.js',

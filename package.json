@@ -17,6 +17,8 @@
 	},
 	"homepage": "https://github.com/aNickzz/mandala.ts#readme",
 	"devDependencies": {
+		"@types/react": "^16.9.2",
+		"@types/react-dom": "^16.9.0",
 		"@typescript-eslint/eslint-plugin": "^2.2.0",
 		"@typescript-eslint/parser": "^2.2.0",
 		"eslint": "^6.4.0",
@@ -28,5 +30,9 @@
 		"typescript": "^3.6.3",
 		"webpack": "^4.40.2",
 		"webpack-cli": "^3.3.8"
+	},
+	"dependencies": {
+		"react": "^16.9.0",
+		"react-dom": "^16.9.0"
 	}
 }
