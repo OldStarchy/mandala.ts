@@ -14,7 +14,13 @@ export class Canvas {
 		}
 	}
 	public redraw() {
+		const t0 = performance.now();
+
 		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 		this.items.forEach(item => item.draw());
+
+		const t1 = performance.now();
+
+		console.log(`Call to canvas.redraw took ${t1 - t0} milliseconds.`);
 	}
 }
