@@ -1,5 +1,6 @@
 import { Undo } from './Undo';
-import { Context, IDrawnItem } from '../mandala';
+import { Context } from '../mandala';
+import {IDrawnItem} from "../DrawnItem/IDrawnItem";
 export class DrawItemUndo extends Undo {
 	public constructor(context: Context, item: IDrawnItem) {
 		super(
