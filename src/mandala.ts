@@ -77,17 +77,24 @@ class ToolManager {
 		this.tools.push(tool);
 	}
 
-	public deactivateTool() {
+	public activateTool(tool: number | null) {
+		if (this.activeTool === tool) {
+			return;
+		}
+
 		if (this.activeTool !== null) {
 			this.tools[this.activeTool].onDeactivate();
 			this.activeTool = null;
 		}
-	}
 
-	public activateTool(tool: number) {
-		this.deactivateTool();
-		this.activeTool = tool;
-		this.tools[this.activeTool].onActivate();
+		if (tool !== null) {
+			this.activeTool = tool;
+			this.tools[this.activeTool].onActivate();
+
+			console.log(`Tool "${this.activeTool}" activated`);
+		} else {
+			console.log(`Tools deactivated`);
+		}
 	}
 
 	public allTools() {
@@ -115,6 +122,8 @@ class CommandManager {
 			throw `Command "${id}" does not exist`;
 		}
 
+		console.log(`Running command "${id}"`);
+
 		this.commands[id](this.context);
 	}
 }
@@ -122,7 +131,21 @@ class CommandManager {
 interface IShortcut {
 	matches(event: KeyboardEvent): boolean;
 	equals(other: IShortcut): boolean;
+	toString(): string;
 }
+
+// class ShortcutChord implements IShortcut {
+// 	public static parse(str: string) {
+// 		const parts = str.split(',').map(part => part.trim());
+
+// 		if (parts.length > 1) {
+// 			throw 'Chorded shortcuts not implemented';
+// 		}
+
+// 		const stroke = parts[0];
+// 		return ShortcutStroke.parse(stroke);
+// 	}
+// }
 
 class ShortcutStroke implements IShortcut {
 	public constructor(
@@ -162,23 +185,47 @@ class ShortcutStroke implements IShortcut {
 			this.key
 		]
 			.filter(v => v !== null)
-			.join(' + ');
+			.join('+');
+	}
+
+	public static parse(str: string) {
+		const keys = str.split('+').map(key => key.trim());
+
+		if (keys.length == 0) {
+			throw `Invalid shortcut string ${str}`;
+		}
+
+		let alt = false;
+		let ctrl = false;
+		let shift = false;
+		let key = keys.pop()!;
+
+		keys.forEach(modifier => {
+			if (modifier === 'alt') {
+				alt = true;
+				return;
+			}
+			if (modifier === 'ctrl') {
+				ctrl = true;
+				return;
+			}
+			if (modifier === 'shift') {
+				shift = true;
+				return;
+			}
+
+			throw `Invalid shortcut string ${str}`;
+		});
+
+		return new ShortcutStroke(key, ctrl, shift, alt);
 	}
 }
 
 type Shortcut = ShortcutStroke; //No chorded shortcuts yet
 
-const initUndo = (context: Context) => {
-	context.command.register('edit.undo', () => context.undo.undo());
-	context.command.register('edit.redo', () => context.undo.redo());
-
-	context.shortcut.register(new ShortcutStroke('z', true), 'edit.undo');
-	context.shortcut.register(new ShortcutStroke('y', true), 'edit.redo');
-};
-
 class ShortcutManager {
 	private readonly shortcuts: {
-		input: Shortcut;
+		input: IShortcut;
 		command: string;
 	}[] = [];
 
@@ -194,16 +241,27 @@ class ShortcutManager {
 		const sc = this.getShortcutForEvent(event);
 
 		if (sc) {
+			console.log(`Shortcut "${sc.input.toString()}" detected`);
 			this.context.command.run(sc.command);
 		}
 	}
 
-	public register(input: Shortcut, command: string) {
+	public register(input: IShortcut, command: string): void;
+	public register(input: string, command: string): void;
+	public register(input: string | IShortcut, command: string): void {
+		if (typeof input === 'string') {
+			input = ShortcutStroke.parse(input);
+		}
+
 		for (const sc of this.shortcuts) {
 			if (sc.input.equals(input)) {
 				throw `Duplicate shortcut input "${input.toString()}"`;
 			}
 		}
+
+		console.log(
+			`Shortcut "${input.toString()}" registered for "${command}"`
+		);
 
 		this.shortcuts.push({
 			input,
@@ -216,20 +274,25 @@ class ShortcutManager {
 	}
 }
 
+const initUndo = (context: Context) => {
+	context.command.register('edit.undo', () => context.undo.undo());
+	context.command.register('edit.redo', () => context.undo.redo());
+
+	context.shortcut.register('ctrl+z', 'edit.undo');
+	context.shortcut.register('ctrl+y', 'edit.redo');
+};
+
 const initToolbarHotkeys = (context: Context) => {
 	for (let i = 0; i < 9; i++) {
 		context.command.register(`tool.activate.${i + 1}`, () => {
 			if (i < context.tools.allTools().length) {
 				context.tools.activateTool(i);
 			} else {
-				context.tools.deactivateTool();
+				context.tools.activateTool(null);
 			}
 		});
 
-		context.shortcut.register(
-			new ShortcutStroke(`${i + 1}`),
-			`tool.activate.${i + 1}`
-		);
+		context.shortcut.register(`${i + 1}`, `tool.activate.${i + 1}`);
 	}
 };
 
