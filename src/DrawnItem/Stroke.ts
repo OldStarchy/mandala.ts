@@ -6,10 +6,23 @@ export class Stroke extends DrawnItem {
 	public constructor(context: Context) {
 		super(context);
 	}
+
 	public addPoint(point: Point) {
 		this.points.push(point);
 		this.context.canvas.redraw();
 	}
+
+	public setPoint(index: number, point: Point) {
+		if (index < 0) index += this.points.length;
+		this.points[index] = point;
+		this.context.canvas.redraw();
+	}
+
+	public getPoint(index: number) {
+		if (index < 0) index += this.points.length;
+		return this.points[index];
+	}
+
 	public draw() {
 		const ctx = this.context.canvas.ctx;
 		ctx.strokeStyle = this.colours.stroke;
@@ -25,9 +38,5 @@ export class Stroke extends DrawnItem {
 			ctx.lineTo(...this.points[i].xy());
 		}
 		ctx.stroke();
-	}
-	public getPoint(index: number) {
-		if (index < 0) index += this.points.length;
-		return this.points[index];
 	}
 }

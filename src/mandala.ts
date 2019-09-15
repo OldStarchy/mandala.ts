@@ -5,6 +5,7 @@ import { Mouse } from './Input/Mouse';
 import { Keyboard } from './Input/Keyboard';
 import { UndoHistory } from './Undo/UndoHistory';
 import { Tool } from './Tool/Tool';
+import { LineTool } from './Tool/LineTool';
 
 export interface IRepetitionSettings {
 	repetitions: number;
@@ -299,5 +300,6 @@ const initToolbarHotkeys = (context: Context) => {
 const canvas = document.getElementById('Canvas') as HTMLCanvasElement;
 const ctx = new Context(canvas);
 ctx.tools.addTool(new StrokeTool(ctx));
+ctx.tools.addTool(new LineTool(ctx));
 initUndo(ctx);
 initToolbarHotkeys(ctx);
