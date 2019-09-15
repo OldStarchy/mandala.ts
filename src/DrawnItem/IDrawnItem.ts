@@ -1,3 +1,3 @@
 export interface IDrawnItem {
-	draw(): void;
+	draw(ctx: CanvasRenderingContext2D): void;
 }

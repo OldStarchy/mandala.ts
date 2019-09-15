@@ -1,12 +1,8 @@
 import { StrokeTool } from './Tool/StrokeTool';
-import { UndoTool } from './Tool/UndoTool';
 import { LineTool } from './Tool/LineTool';
-import { ShortcutStroke } from './ShortcutStroke';
 import { Context } from './Context';
+import { RadialRepeatModifier } from './RadialRepeatModifier';
 
-export interface IRepetitionSettings {
-	repetitions: number;
-}
 export interface IColours {
 	stroke: string;
 	fill: string;
@@ -20,6 +16,9 @@ class App {
 	constructor(canvas: HTMLCanvasElement) {
 		this.context = new Context(canvas);
 
+		this.context.canvas.modifiers.push(
+			new RadialRepeatModifier(this.context, { repetitions: 9 })
+		);
 		this.initTools();
 		this.initUndo();
 		this.initToolbarHotkeys();

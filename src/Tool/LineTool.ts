@@ -1,12 +1,11 @@
 import { DrawItemUndo } from '../Undo/DrawItemUndo';
-import { DrawnItemRadialRepeatDecorator } from '../DrawnItem/DrawnItemRadialRepeatDecorator';
 import { Stroke } from '../DrawnItem/Stroke';
 import { Point } from '../Geometry/Point';
 import { Tool } from './Tool';
 import { EventHandler } from '../mandala';
 import { Context } from '../Context';
 export class LineTool extends Tool {
-	private stroke: DrawnItemRadialRepeatDecorator<Stroke> | null = null;
+	private stroke: Stroke | null = null;
 	private onMouseDownHandler: EventHandler;
 	private onMouseUpHandler: EventHandler;
 	private onMouseMoveHandler: EventHandler;
@@ -20,12 +19,9 @@ export class LineTool extends Tool {
 	}
 	public onMouseDown(event: MouseEvent) {
 		const { x, y } = event;
-		this.stroke = new DrawnItemRadialRepeatDecorator(
-			this.context,
-			new Stroke(this.context)
-		);
-		this.stroke.inner.addPoint(new Point(x, y));
-		this.stroke.inner.addPoint(new Point(x, y));
+		this.stroke = new Stroke(this.context);
+		this.stroke.addPoint(new Point(x, y));
+		this.stroke.addPoint(new Point(x, y));
 		this.context.canvas.add(this.stroke);
 	}
 	public onMouseUp(event: MouseEvent) {
@@ -39,7 +35,7 @@ export class LineTool extends Tool {
 			const { x, y } = event;
 			const point = new Point(x, y);
 
-			this.stroke.inner.setPoint(-1, point);
+			this.stroke.setPoint(-1, point);
 		}
 	}
 	public onKeyPress(event: KeyboardEvent) {
@@ -60,6 +56,7 @@ export class LineTool extends Tool {
 		this.context.mouse.on('mousemove', this.onMouseMoveHandler);
 		this.context.keyboard.on('keydown', this.onKeyPressHandler);
 	}
+
 	public onDeactivate() {
 		this.cancel();
 		this.context.mouse.off('mousedown', this.onMouseDownHandler);
