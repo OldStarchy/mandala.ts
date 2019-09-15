@@ -25,6 +25,10 @@ export class Stroke extends DrawnItem {
 		return this.points[index];
 	}
 
+	public getPoints() {
+		return this.points.slice();
+	}
+
 	public draw(ctx: CanvasRenderingContext2D) {
 		ctx.strokeStyle = this.colours.stroke;
 		ctx.fillStyle = this.colours.fill;
