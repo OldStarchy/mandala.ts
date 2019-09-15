@@ -1,72 +1,23 @@
-import { Context } from '../Context';
 import { Stroke } from '../DrawnItem/Stroke';
-import { EventHandler } from '../EventEmitter/EventEmitter';
 import { Point } from '../Geometry/Point';
-import { Tool } from './Tool';
+import { ClickAndDragTool } from './ClickAndDragTool';
 
-export class LineTool extends Tool {
-	private stroke: Stroke | null = null;
-	private onMouseDownHandler: EventHandler<MouseEvent>;
-	private onMouseUpHandler: EventHandler<MouseEvent>;
-	private onMouseMoveHandler: EventHandler<MouseEvent>;
-	private onKeyPressHandler: EventHandler<KeyboardEvent>;
-	public constructor(context: Context) {
-		super(context);
-		this.onMouseDownHandler = this.onMouseDown.bind(this);
-		this.onMouseUpHandler = this.onMouseUp.bind(this);
-		this.onMouseMoveHandler = this.onMouseMove.bind(this);
-		this.onKeyPressHandler = this.onKeyPress.bind(this);
-	}
-
-	public onMouseDown(event: MouseEvent) {
+export class LineTool extends ClickAndDragTool<Stroke> {
+	public beginShape(event: MouseEvent) {
 		const { x, y } = event;
-		this.stroke = new Stroke(this.context);
-		this.stroke.addPoint(new Point(x, y));
-		this.stroke.addPoint(new Point(x, y));
-		this.context.canvas.stage(this.stroke);
+		const item = new Stroke(this.context);
+
+		item.addPoint(new Point(x, y));
+		item.addPoint(new Point(x, y));
+
+		return item;
 	}
 
-	public onMouseUp(event: MouseEvent) {
-		this.context.canvas.commit();
-		this.stroke = null;
-	}
+	public drag(event: MouseEvent) {
+		const { x, y } = event;
+		const point = new Point(x, y);
 
-	public onMouseMove(event: MouseEvent) {
-		if (this.stroke) {
-			const { x, y } = event;
-			const point = new Point(x, y);
-
-			this.stroke.setPoint(-1, point);
-			this.context.canvas.requestRedraw();
-		}
-	}
-
-	public onKeyPress(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			this.cancel();
-		}
-	}
-
-	public cancel() {
-		if (this.stroke) {
-			this.context.canvas.drop();
-			this.stroke = null;
-		}
-	}
-
-	public onActivate() {
-		this.onDeactivate();
-		this.context.mouse.on('mousedown', this.onMouseDownHandler);
-		this.context.mouse.on('mouseup', this.onMouseUpHandler);
-		this.context.mouse.on('mousemove', this.onMouseMoveHandler);
-		this.context.keyboard.on('keydown', this.onKeyPressHandler);
-	}
-
-	public onDeactivate() {
-		this.cancel();
-		this.context.mouse.off('mousedown', this.onMouseDownHandler);
-		this.context.mouse.off('mouseup', this.onMouseUpHandler);
-		this.context.mouse.off('mousemove', this.onMouseMoveHandler);
-		this.context.keyboard.off('keydown', this.onKeyPressHandler);
+		this.item!.setPoint(-1, point);
+		this.context.canvas.requestRedraw();
 	}
 }
