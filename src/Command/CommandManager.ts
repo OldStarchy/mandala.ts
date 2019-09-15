@@ -1,5 +1,6 @@
 import { Context } from '../Context';
 import { Command } from './Command';
+
 export class CommandManager {
 	private readonly commands: {
 		[id: string]: Command;

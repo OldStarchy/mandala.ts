@@ -1,15 +1,16 @@
 import { Context } from '../Context';
 import { Stroke } from '../DrawnItem/Stroke';
+import { EventHandler } from '../EventEmitter/EventEmitter';
 import { Point } from '../Geometry/Point';
-import { EventHandler } from '../mandala';
 import { DrawItemUndo } from '../Undo/DrawItemUndo';
 import { Tool } from './Tool';
+
 export class LineTool extends Tool {
 	private stroke: Stroke | null = null;
-	private onMouseDownHandler: EventHandler;
-	private onMouseUpHandler: EventHandler;
-	private onMouseMoveHandler: EventHandler;
-	private onKeyPressHandler: EventHandler;
+	private onMouseDownHandler: EventHandler<MouseEvent>;
+	private onMouseUpHandler: EventHandler<MouseEvent>;
+	private onMouseMoveHandler: EventHandler<MouseEvent>;
+	private onKeyPressHandler: EventHandler<KeyboardEvent>;
 	public constructor(context: Context) {
 		super(context);
 		this.onMouseDownHandler = this.onMouseDown.bind(this);

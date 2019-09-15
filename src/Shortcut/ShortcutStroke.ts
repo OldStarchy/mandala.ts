@@ -1,4 +1,5 @@
 import { IShortcut } from './IShortcut';
+
 // class ShortcutChord implements IShortcut {
 // 	public static parse(str: string) {
 // 		const parts = str.split(',').map(part => part.trim());
@@ -9,6 +10,7 @@ import { IShortcut } from './IShortcut';
 // 		return ShortcutStroke.parse(stroke);
 // 	}
 // }
+
 export class ShortcutStroke implements IShortcut {
 	public constructor(
 		public readonly key: string,

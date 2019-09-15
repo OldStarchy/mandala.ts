@@ -1,4 +1,5 @@
-import { EventHandler } from '../mandala';
+import { EventHandler } from './EventEmitter';
+
 export interface IEventEmitter {
 	on(type: string, handler: EventHandler): void;
 	off(type: string, handler: EventHandler): void;

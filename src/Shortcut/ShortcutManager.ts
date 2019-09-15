@@ -1,14 +1,16 @@
 import { Context } from '../Context';
-import { EventHandler } from '../mandala';
+import { EventHandler } from '../EventEmitter/EventEmitter';
 import { IShortcut } from './IShortcut';
 import { ShortcutStroke } from './ShortcutStroke';
+
 export class ShortcutManager {
 	private readonly shortcuts: {
 		input: IShortcut;
 		command: string;
 	}[] = [];
 
-	private onKeyDownHandler: EventHandler;
+	private onKeyDownHandler: EventHandler<KeyboardEvent>;
+
 	public constructor(private context: Context) {
 		this.onKeyDownHandler = this.onKeyDown.bind(this);
 		context.keyboard.on('keydown', this.onKeyDownHandler);

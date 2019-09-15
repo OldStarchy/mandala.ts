@@ -1,4 +1,5 @@
 import { EventEmitter } from '../EventEmitter/EventEmitter';
+
 export class Mouse extends EventEmitter {
 	public constructor(element: HTMLElement) {
 		super();

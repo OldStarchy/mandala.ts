@@ -1,8 +1,10 @@
 import { Context } from '../Context';
-import { EventHandler } from '../mandala';
+import { EventHandler } from '../EventEmitter/EventEmitter';
 import { Tool } from './Tool';
+
 class FillTool extends Tool {
-	private onMouseDownHandler: EventHandler;
+	private onMouseDownHandler: EventHandler<MouseEvent>;
+
 	public constructor(context: Context) {
 		super(context);
 		this.onMouseDownHandler = this.onMouseDown.bind(this);

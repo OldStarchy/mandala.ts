@@ -1,4 +1,5 @@
 import { Tool } from './Tool';
+
 export class ToolManager {
 	private tools: Tool[] = [];
 	private activeTool: number | null = null;

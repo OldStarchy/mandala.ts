@@ -6,6 +6,7 @@ import { IColours } from './mandala';
 import { ShortcutManager } from './Shortcut/ShortcutManager';
 import { ToolManager } from './Tool/ToolManager';
 import { UndoHistory } from './Undo/UndoHistory';
+
 export class Context {
 	public readonly mouse: Mouse;
 	public readonly keyboard: Keyboard;
@@ -15,6 +16,7 @@ export class Context {
 	public readonly tools: ToolManager;
 	public readonly command: CommandManager;
 	public readonly shortcut: ShortcutManager;
+
 	public constructor(canvas: HTMLCanvasElement) {
 		const ctx = canvas.getContext('2d');
 		if (ctx === null) {

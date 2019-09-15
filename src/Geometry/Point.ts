@@ -1,5 +1,6 @@
 export class Point {
 	public constructor(public readonly x: number, public readonly y: number) {}
+
 	public sub(other: Point) {
 		return new Point(this.x - other.x, this.y - other.y);
 	}

@@ -8,8 +8,6 @@ export interface IColours {
 	fill: string;
 }
 
-export type EventHandler<T = any> = (event: T) => void;
-
 class App {
 	private readonly context: Context;
 

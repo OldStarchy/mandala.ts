@@ -1,8 +1,10 @@
 import { EventEmitter } from '../EventEmitter/EventEmitter';
 import { IUndo } from './Undo';
+
 export class UndoHistory extends EventEmitter {
 	protected readonly history: IUndo[] = [];
 	protected readonly future: IUndo[] = [];
+
 	public push(undo: IUndo) {
 		this.history.push(undo);
 		this.future.splice(0);

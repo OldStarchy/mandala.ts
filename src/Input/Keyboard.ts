@@ -1,4 +1,5 @@
 import { EventEmitter } from '../EventEmitter/EventEmitter';
+
 export class Keyboard extends EventEmitter {
 	public constructor() {
 		super();
