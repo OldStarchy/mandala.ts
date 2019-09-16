@@ -1,9 +1,9 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 import { Point } from '../Geometry/Point';
 import { DrawnItem } from './DrawnItem';
 
 export class Circle extends DrawnItem {
-	public constructor(context: Context, public topLeft: Point, public bottomRight: Point) {
+	public constructor(context: App, public topLeft: Point, public bottomRight: Point) {
 		super(context);
 	}
 

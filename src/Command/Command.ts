@@ -1,3 +1,3 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 
-export type Command = (context: Context) => void;
+export type Command = (context: App) => void;

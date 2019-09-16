@@ -29,4 +29,8 @@ export class StrokeTool extends ClickAndDragTool<Stroke> {
 			}
 		}
 	}
+
+	public getName() {
+		return 'Stroke Tool';
+	}
 }

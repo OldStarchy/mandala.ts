@@ -29,4 +29,8 @@ export class CircleTool extends ClickAndDragTool<Circle> {
 		item.bottomRight = point;
 		this.context.canvas.requestRedraw();
 	}
+
+	public getName() {
+		return 'Circle Tool';
+	}
 }

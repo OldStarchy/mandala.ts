@@ -1,4 +1,4 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 import { Command } from './Command';
 
 export class CommandManager {
@@ -6,7 +6,7 @@ export class CommandManager {
 		[id: string]: Command;
 	} = {};
 
-	public constructor(private readonly context: Context) {}
+	public constructor(private readonly context: App) {}
 	public register(id: string, command: Command) {
 		if (this.commands[id]) {
 			throw `Duplicate command id "${id}"`;

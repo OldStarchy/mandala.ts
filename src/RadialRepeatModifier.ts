@@ -1,4 +1,4 @@
-import { Context } from './Context';
+import { App } from './Components/App';
 import { DrawnItemDecorator } from './DrawnItem/DrawnItemDecorator';
 import { IDrawnItem } from './DrawnItem/IDrawnItem';
 import { Modifier } from './Modifier';
@@ -34,7 +34,7 @@ export class DrawnItemRadialRepeatDecorator<T extends IDrawnItem> extends DrawnI
 }
 
 export class RadialRepeatModifier extends Modifier {
-	public constructor(protected readonly context: Context, public settings: IRadialRepeatSettings) {
+	public constructor(protected readonly context: App, public settings: IRadialRepeatSettings) {
 		super();
 	}
 

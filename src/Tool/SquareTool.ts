@@ -29,4 +29,8 @@ export class SquareTool extends ClickAndDragTool<Square> {
 		item.bottomRight = point;
 		this.context.canvas.requestRedraw();
 	}
+
+	public getName() {
+		return 'Square Tool';
+	}
 }

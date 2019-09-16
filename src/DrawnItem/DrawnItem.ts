@@ -1,11 +1,11 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 import { IColours } from '../mandala';
 import { IDrawnItem } from './IDrawnItem';
 
 export abstract class DrawnItem implements IDrawnItem {
 	protected colours: IColours;
 
-	public constructor(protected readonly context: Context) {
+	public constructor(protected readonly context: App) {
 		this.colours = context.colours;
 	}
 

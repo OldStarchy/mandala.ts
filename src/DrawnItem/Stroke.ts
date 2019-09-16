@@ -1,11 +1,11 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 import { Point } from '../Geometry/Point';
 import { DrawnItem } from './DrawnItem';
 
 export class Stroke extends DrawnItem {
 	protected points: Point[] = [];
 
-	public constructor(context: Context) {
+	public constructor(context: App) {
 		super(context);
 	}
 

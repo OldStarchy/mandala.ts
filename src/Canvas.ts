@@ -1,4 +1,4 @@
-import { Context } from './Context';
+import { App } from './Components/App';
 import { IDrawnItem } from './DrawnItem/IDrawnItem';
 import { Modifier } from './Modifier';
 
@@ -8,7 +8,13 @@ export class Canvas {
 	private redrawTimeout: number | null = null;
 	public modifiers: Modifier[] = [];
 
-	public constructor(private context: Context, public readonly ctx: CanvasRenderingContext2D) {}
+	private ctx: CanvasRenderingContext2D | null = null;
+
+	public constructor(private context: App) {}
+
+	public setContext(ctx: CanvasRenderingContext2D) {
+		this.ctx = ctx;
+	}
 
 	public stage(item: IDrawnItem) {
 		this.stagingItems.push(this.modifiers.reduce((i, m) => m.modify(i), item));
@@ -58,14 +64,20 @@ export class Canvas {
 
 	public redraw() {
 		this.redrawTimeout = null;
-		const t0 = performance.now();
+		// const t0 = performance.now();
 
-		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-		this.items.forEach(item => item.draw(this.ctx));
-		this.stagingItems.forEach(item => item.draw(this.ctx));
+		const ctx = this.ctx;
 
-		const t1 = performance.now();
+		if (ctx === null) {
+			return;
+		}
 
-		console.log(`Call to canvas.redraw took ${t1 - t0} milliseconds.`);
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		this.items.forEach(item => item.draw(ctx));
+		this.stagingItems.forEach(item => item.draw(ctx));
+
+		// const t1 = performance.now();
+
+		// console.log(`Call to canvas.redraw took ${t1 - t0} milliseconds.`);
 	}
 }

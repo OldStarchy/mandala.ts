@@ -1,4 +1,4 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 import { EventHandler } from '../EventEmitter/EventEmitter';
 import { IShortcut } from './IShortcut';
 import { ShortcutStroke } from './ShortcutStroke';
@@ -11,7 +11,7 @@ export class ShortcutManager {
 
 	private onKeyDownHandler: EventHandler<KeyboardEvent>;
 
-	public constructor(private context: Context) {
+	public constructor(private context: App) {
 		this.onKeyDownHandler = this.onKeyDown.bind(this);
 		context.keyboard.on('keydown', this.onKeyDownHandler);
 	}

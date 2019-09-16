@@ -1,4 +1,4 @@
-import { Context } from '../Context';
+import { App } from '../Components/App';
 import { IDrawnItem } from '../DrawnItem/IDrawnItem';
 import { EventHandler } from '../EventEmitter/EventEmitter';
 import { Tool } from './Tool';
@@ -10,7 +10,7 @@ export abstract class ClickAndDragTool<T extends IDrawnItem> extends Tool {
 	protected onMouseMoveHandler: EventHandler<MouseEvent>;
 	protected onKeyPressHandler: EventHandler<KeyboardEvent>;
 
-	public constructor(context: Context) {
+	public constructor(context: App) {
 		super(context);
 		this.onMouseDownHandler = this.onMouseDown.bind(this);
 		this.onMouseUpHandler = this.onMouseUp.bind(this);
