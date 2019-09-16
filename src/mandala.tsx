@@ -4,6 +4,7 @@ import { AppComponent } from './Components/AppComponent';
 import { Context } from './Context';
 import { RadialRepeatModifier } from './RadialRepeatModifier';
 import { CircleTool } from './Tool/CircleTool';
+import { SquareTool } from './Tool/SquareTool';
 import { StrokeTool } from './Tool/StrokeTool';
 
 export interface IColours {
@@ -26,6 +27,7 @@ class App {
 	protected initTools() {
 		this.context.tools.addTool(new StrokeTool(this.context));
 		this.context.tools.addTool(new CircleTool(this.context));
+		this.context.tools.addTool(new SquareTool(this.context));
 	}
 
 	protected initUndo() {
