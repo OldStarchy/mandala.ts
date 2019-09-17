@@ -1,16 +1,17 @@
 import { Square } from '../DrawnItem/Square';
 import { Point } from '../Geometry/Point';
+import { MyMouseEvent } from '../Input/MyMouseEvent';
 import { ClickAndDragTool } from './ClickAndDragTool';
 
 export class SquareTool extends ClickAndDragTool<Square> {
-	public beginShape(event: MouseEvent) {
+	public beginShape(event: MyMouseEvent) {
 		const { x, y } = event;
 		const item = new Square(this.context, new Point(x, y), new Point(x, y));
 
 		return item;
 	}
 
-	public drag(event: MouseEvent) {
+	public drag(event: MyMouseEvent) {
 		const { x, y } = event;
 		const item = this.item!;
 		const topLeft = item.topLeft;

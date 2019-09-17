@@ -31,7 +31,7 @@ export class App extends React.Component {
 		super(props);
 		this.canvas = new Canvas(this);
 		this.mouse = new Mouse();
-		this.keyboard = new Keyboard();
+		this.keyboard = new Keyboard(document);
 		this.colours = { stroke: 'black', fill: 'black' };
 		this.undo = new UndoHistory();
 		this.tools = new ToolManager();
@@ -45,7 +45,7 @@ export class App extends React.Component {
 	}
 
 	private onCanvasReady(canvas: HTMLCanvasElement) {
-		this.mouse.attach(canvas);
+		this.mouse.setElement(canvas);
 		this.canvas.setContext(canvas.getContext('2d')!);
 	}
 

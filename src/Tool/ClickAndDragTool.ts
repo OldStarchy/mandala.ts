@@ -1,13 +1,14 @@
 import { App } from '../Components/App';
 import { IDrawnItem } from '../DrawnItem/IDrawnItem';
 import { EventHandler } from '../EventEmitter/EventEmitter';
+import { MyMouseEvent } from '../Input/MyMouseEvent';
 import { Tool } from './Tool';
 
 export abstract class ClickAndDragTool<T extends IDrawnItem> extends Tool {
 	protected item: T | null = null;
-	protected onMouseDownHandler: EventHandler<MouseEvent>;
-	protected onMouseUpHandler: EventHandler<MouseEvent>;
-	protected onMouseMoveHandler: EventHandler<MouseEvent>;
+	protected onMouseDownHandler: EventHandler<MyMouseEvent>;
+	protected onMouseUpHandler: EventHandler<MyMouseEvent>;
+	protected onMouseMoveHandler: EventHandler<MyMouseEvent>;
 	protected onKeyPressHandler: EventHandler<KeyboardEvent>;
 
 	public constructor(context: App) {
@@ -18,11 +19,11 @@ export abstract class ClickAndDragTool<T extends IDrawnItem> extends Tool {
 		this.onKeyPressHandler = this.onKeyPress.bind(this);
 	}
 
-	public abstract beginShape(event: MouseEvent): T;
-	public abstract drag(event: MouseEvent): void;
+	public abstract beginShape(event: MyMouseEvent): T;
+	public abstract drag(event: MyMouseEvent): void;
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	public endShape(event: MouseEvent) {}
+	public endShape(event: MyMouseEvent) {}
 
 	public cancel() {
 		if (this.item) {
@@ -31,12 +32,12 @@ export abstract class ClickAndDragTool<T extends IDrawnItem> extends Tool {
 		}
 	}
 
-	public onMouseDown(event: MouseEvent) {
+	public onMouseDown(event: MyMouseEvent) {
 		this.item = this.beginShape(event);
 		this.context.canvas.stage(this.item);
 	}
 
-	public onMouseUp(event: MouseEvent) {
+	public onMouseUp(event: MyMouseEvent) {
 		if (this.item) {
 			this.endShape(event);
 			this.context.canvas.commit();
@@ -44,7 +45,7 @@ export abstract class ClickAndDragTool<T extends IDrawnItem> extends Tool {
 		}
 	}
 
-	public onMouseMove(event: MouseEvent) {
+	public onMouseMove(event: MyMouseEvent) {
 		if (this.item) {
 			this.drag(event);
 		}

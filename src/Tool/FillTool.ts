@@ -1,16 +1,17 @@
 // import { Context } from '../Context';
 // import { EventHandler } from '../EventEmitter/EventEmitter';
+// import { MyMouseEvent } from '../Input/Mouse';
 // import { Tool } from './Tool';
 
 // class FillTool extends Tool {
-// 	private onMouseDownHandler: EventHandler<MouseEvent>;
+// 	private onMouseDownHandler: EventHandler<MyMouseEvent>;
 
 // 	public constructor(context: Context) {
 // 		super(context);
 // 		this.onMouseDownHandler = this.onMouseDown.bind(this);
 // 	}
 
-// 	private onMouseDown(event: MouseEvent) {
+// 	private onMouseDown(event: MyMouseEvent) {
 // 		this.fill(event.x, event.y);
 // 	}
 

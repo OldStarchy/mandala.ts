@@ -1,16 +1,17 @@
 import { Circle } from '../DrawnItem/Circle';
 import { Point } from '../Geometry/Point';
+import { MyMouseEvent } from '../Input/MyMouseEvent';
 import { ClickAndDragTool } from './ClickAndDragTool';
 
 export class CircleTool extends ClickAndDragTool<Circle> {
-	public beginShape(event: MouseEvent) {
+	public beginShape(event: MyMouseEvent) {
 		const { x, y } = event;
 		const item = new Circle(this.context, new Point(x, y), new Point(x, y));
 
 		return item;
 	}
 
-	public drag(event: MouseEvent) {
+	public drag(event: MyMouseEvent) {
 		const { x, y } = event;
 		const item = this.item!;
 		const topLeft = item.topLeft;

@@ -1,9 +1,10 @@
 import { Stroke } from '../DrawnItem/Stroke';
 import { Point } from '../Geometry/Point';
+import { MyMouseEvent } from '../Input/MyMouseEvent';
 import { ClickAndDragTool } from './ClickAndDragTool';
 
 export class StrokeTool extends ClickAndDragTool<Stroke> {
-	public beginShape(event: MouseEvent) {
+	public beginShape(event: MyMouseEvent) {
 		const { x, y } = event;
 		const item = new Stroke(this.context);
 
@@ -11,7 +12,7 @@ export class StrokeTool extends ClickAndDragTool<Stroke> {
 		return item;
 	}
 
-	public drag(event: MouseEvent) {
+	public drag(event: MyMouseEvent) {
 		const { x, y } = event;
 		const item = this.item!;
 		const point = new Point(x, y);
