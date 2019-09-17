@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ToolManager } from '../Tool/ToolManager';
+import { AppContext } from './AppContext';
 import { ToolbarButton } from './ToolbarButton';
 
 const div: React.CSSProperties = {
@@ -23,14 +23,29 @@ const button: React.CSSProperties = {
 	width: '100%',
 };
 
-export const Toolbar = (props: { tools: ToolManager }) => (
-	<div style={div} className="toolbar">
-		<ol style={ol}>
-			{props.tools.allTools().map((tool, i) => (
-				<li style={li} key={i}>
-					<ToolbarButton style={button} tool={tool} onClick={() => props.tools.activateTool(i)} />
-				</li>
-			))}
-		</ol>
-	</div>
-);
+export class Toolbar extends React.Component {
+	static contextType = AppContext;
+	context!: React.ContextType<typeof AppContext>;
+
+	public render() {
+		const app = this.context;
+
+		return app == null ? (
+			<div style={div} className="toolbar" />
+		) : (
+			<div style={div} className="toolbar">
+				<ol style={ol}>
+					{app.tools.allTools().map((tool, i) => (
+						<li style={li} key={i}>
+							<ToolbarButton
+								style={button}
+								text={tool.getName()}
+								onClick={() => app.command.run(`tool.activate.${i + 1}`)}
+							/>
+						</li>
+					))}
+				</ol>
+			</div>
+		);
+	}
+}

@@ -11,6 +11,7 @@ import { SquareTool } from '../Tool/SquareTool';
 import { StrokeTool } from '../Tool/StrokeTool';
 import { ToolManager } from '../Tool/ToolManager';
 import { UndoHistory } from '../Undo/UndoHistory';
+import { AppContext } from './AppContext';
 import { Toolbar } from './Toolbar';
 
 const canvasStyle: React.CSSProperties = {
@@ -52,8 +53,10 @@ export class App extends React.Component {
 	public render() {
 		return (
 			<div className="mandala-app">
-				<canvas style={canvasStyle} width={800} height={800} ref={this.onCanvasReady.bind(this)} />
-				<Toolbar tools={this.tools} />
+				<AppContext.Provider value={this}>
+					<canvas style={canvasStyle} width={800} height={800} ref={this.onCanvasReady.bind(this)} />
+					<Toolbar />
+				</AppContext.Provider>
 			</div>
 		);
 	}
