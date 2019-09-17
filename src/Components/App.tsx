@@ -13,6 +13,10 @@ import { ToolManager } from '../Tool/ToolManager';
 import { UndoHistory } from '../Undo/UndoHistory';
 import { Toolbar } from './Toolbar';
 
+const canvasStyle: React.CSSProperties = {
+	border: '1px solid black',
+};
+
 export class App extends React.Component {
 	public readonly mouse: Mouse;
 	public readonly keyboard: Keyboard;
@@ -48,7 +52,7 @@ export class App extends React.Component {
 	public render() {
 		return (
 			<div className="mandala-app">
-				<canvas width={800} height={800} ref={this.onCanvasReady.bind(this)} />
+				<canvas style={canvasStyle} width={800} height={800} ref={this.onCanvasReady.bind(this)} />
 				<Toolbar tools={this.tools} />
 			</div>
 		);
