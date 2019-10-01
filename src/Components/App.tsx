@@ -39,6 +39,11 @@ export class App extends React.Component {
 		this.command = new CommandManager(this);
 		//Must come after keyboard
 		this.shortcut = new ShortcutManager(this);
+
+		this.init();
+	}
+
+	private init() {
 		this.canvas.modifiers.push(new RadialRepeatModifier(this, { repetitions: 9 }));
 		this.initTools();
 		this.initUndo();
